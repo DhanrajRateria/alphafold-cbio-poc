@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bio-dark: #0a0f1e;
+  --bio-panel: #0d1529;
+  --bio-border: #1e3a5f;
+  --bio-accent: #00d4ff;
+  --bio-green: #00ff9d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background-color: var(--bio-dark);
+  color: #e2e8f0;
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bio-dark); }
+::-webkit-scrollbar-thumb { background: var(--bio-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bio-muted, #4a7fa5); }
+
+/* Grid background pattern */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Glow effects */
+.glow-accent {
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15), 0 0 40px rgba(0, 212, 255, 0.05);
+}
+
+.glow-green {
+  box-shadow: 0 0 20px rgba(0, 255, 157, 0.15);
+}
+
+/* Panel styles */
+.bio-panel {
+  background: var(--bio-panel);
+  border: 1px solid var(--bio-border);
+  border-radius: 8px;
+}
+
+/* Loading spinner */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  animation: spin-slow 1s linear infinite;
+}
+
+/* NGL viewer container */
+#ngl-viewport {
+  width: 100%;
+  height: 100%;
+}
+
+/* Input focus glow */
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.3), 0 0 15px rgba(0, 212, 255, 0.1);
+}
+
+/* Sequence display */
+.sequence-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  word-break: break-all;
+  line-height: 1.8;
+}
+
+.sequence-display .highlight {
+  background: rgba(255, 45, 85, 0.3);
+  color: #ff2d55;
+  border-radius: 2px;
+  padding: 0 1px;
+  font-weight: 600;
+}
+
+/* Status badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+}
+
+.badge-success {
+  background: rgba(0, 255, 157, 0.1);
+  color: #00ff9d;
+  border: 1px solid rgba(0, 255, 157, 0.2);
+}
+
+.badge-error {
+  background: rgba(255, 45, 85, 0.1);
+  color: #ff2d55;
+  border: 1px solid rgba(255, 45, 85, 0.2);
+}
+
+.badge-info {
+  background: rgba(0, 212, 255, 0.1);
+  color: #00d4ff;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+/* Pipeline step connector */
+.pipeline-connector {
+  width: 2px;
+  height: 24px;
+  background: linear-gradient(to bottom, var(--bio-border), transparent);
+  margin: 0 auto;
+}
