@@ -133,6 +133,7 @@ async function fetchAlphaFold(uniprotId: string): Promise<AlphaFoldEntry> {
     Array<{
       pdbUrl: string;
       cifUrl: string;
+      globalMetricValue?: number;
       meanPlddt?: number;
       modelCreatedDate?: string;
       latestVersion?: number;
@@ -147,7 +148,7 @@ async function fetchAlphaFold(uniprotId: string): Promise<AlphaFoldEntry> {
   return {
     pdbUrl: entry.pdbUrl,
     cifUrl: entry.cifUrl,
-    modelConfidence: entry.meanPlddt ?? 0,
+    modelConfidence: entry.globalMetricValue ?? entry.meanPlddt ?? 0,
     version: entry.latestVersion?.toString() ?? 'unknown',
   };
 }

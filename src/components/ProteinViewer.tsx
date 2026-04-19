@@ -59,6 +59,20 @@ export const ProteinViewer: React.FC<ProteinViewerProps> = ({
         const NGL = await import('ngl');
         setLoadProgress(30);
 
+        // ── Register custom pLDDT colour scheme BEFORE creating stage ────────
+        // AlphaFold stores pLDDT scores in the B-factor column of the PDB file.
+        // A named registry scheme avoids the chroma.js "unknown format" error
+        // that occurs when you pass colorScale as an inline array.
+        NGL.ColormakerRegistry.addScheme(function () {
+          this.atomColor = function (atom) {
+            const b = atom.bfactor;
+            if (b >= 90) return 0x0053d6; // Very High  — dark blue
+            if (b >= 70) return 0x65cbf3; // Confident  — light blue
+            if (b >= 50) return 0xf6d001; // Low        — yellow
+            return 0xff7d45;              // Very Low   — orange/red
+          };
+        }, 'plddt');
+
         // Create stage
         stage = new NGL.Stage(viewportRef.current as HTMLElement, {
           backgroundColor: '#0d1529',
@@ -72,49 +86,42 @@ export const ProteinViewer: React.FC<ProteinViewerProps> = ({
         const component = await stage!.loadFile(pdbUrl, { ext: 'pdb' });
         setLoadProgress(80);
 
-        // ── Cartoon representation colored by pLDDT (B-factor) ──────────────
-        // AlphaFold stores pLDDT in the B-factor column.
-        // We use NGL's built-in bfactor color scheme which reads this column directly.
+        // ── Cartoon backbone coloured by pLDDT ───────────────────────────────
         component.addRepresentation('cartoon', {
-          colorScheme: 'bfactor',
-          colorScale: [
-            [0,   '#ff7d45'],   // Very Low  < 50
-            [50,  '#f6d001'],   // Low        50-70
-            [70,  '#65cbf3'],   // Confident  70-90
-            [90,  '#0053d6'],   // Very High > 90
-            [100, '#0053d6'],
-          ],
+          colorScheme: 'plddt',   // reads our registered scheme above
           smoothSheet: true,
           quality: 'high',
         });
 
         // ── Mutated residue highlight ────────────────────────────────────────
         if (mappedUniprotPosition !== null) {
-          // Spacefill for the specific residue
+          const sel = String(mappedUniprotPosition);
+
           component.addRepresentation('spacefill', {
-            sele: `${mappedUniprotPosition}`,
+            sele: sel,
             color: '#ff2d55',
-            opacity: 0.95,
-            radius: 1.8,
+            opacity: 0.9,
+            radius: 1.6,
           });
 
-          // Ball+stick for extra visibility
           component.addRepresentation('ball+stick', {
-            sele: `${mappedUniprotPosition}`,
+            sele: sel,
             color: '#ff2d55',
             bondScale: 0.3,
-            atomScale: 0.4,
+            atomScale: 0.5,
           });
 
-          // Label on the mutated residue
+          // Use solid hex for backgroundColor — Three.js ignores rgba() alpha
+          // and logs a console warning if you pass an rgba() string here
           component.addRepresentation('label', {
-            sele: `${mappedUniprotPosition} and .CA`,
+            sele: `${sel} and .CA`,
             labelType: 'res',
             color: '#ffffff',
-            zOffset: 2,
+            zOffset: 2.5,
             attachment: 'middle-center',
             showBackground: true,
-            backgroundColor: 'rgba(255,45,85,0.8)',
+            backgroundColor: '#cc1a3a',
+            backgroundOpacity: 0.85,
           });
         }
 
